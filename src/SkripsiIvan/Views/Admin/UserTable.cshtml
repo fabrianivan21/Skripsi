@@ -1,0 +1,35 @@
+@model List<SkripsiIvan.Models.Admin>
+
+@{Layout = "";}
+
+<table class="table dataTable table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Nama Pengguna
+            </th>
+            <th>
+                Nama
+            </th>
+            <th>#</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+                {
+            <tr>
+                <td>
+                    @item.UsernameAdmin
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    @*<a class="btn btn-warning GetEdit" data-id="@item.IdAdmin"><i class="fa fa-edit"></i></a>*@
+                    <a class="btn btn-info GetPassword" data-id="@item.IdAdmin"><i class="fa fa-lock"></i></a>
+                    <a class="btn btn-danger GetDelete" data-id="@item.IdAdmin"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+                }
+    </tbody>
+</table>

@@ -1,0 +1,271 @@
+@model AdminViewModels
+
+@{
+    ViewData["Title"] = "Admin Panel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #btnAdd {
+        margin-left: 20px;
+        margin-top: -1px;
+    }
+</style>
+
+<h2>Admin Panel</h2>
+<hr />
+<br />
+<br />
+
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>Selamat datang, @User.Identity.Name!</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="row">
+    <div class="col-sm-5">
+        <form id="AddForm" asp-action="Buat">
+            <div class="form-horizontal">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="UsernameAdmin" class="col-md-2 control-label">Nama pengguna</label>
+                    <div class="col-md-10">
+                        <input asp-for="IdAdmin" type="hidden" class="form-control" />
+                        <input asp-for="UsernameAdmin" class="form-control" />
+                        <span asp-validation-for="UsernameAdmin" class="text-danger"></span>
+                    </div>
+                </div>
+                <div id="PasswordG" class="form-group">
+                    <label asp-for="PasswordAdmin" class="col-md-2 control-label">Kata sandi</label>
+                    <div class="col-md-10">
+                        <input asp-for="PasswordAdmin" type="password" class="form-control" />
+                        <span asp-validation-for="PasswordAdmin" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Name" class="col-md-2 control-label">Nama lengkap</label>
+                    <div class="col-md-10">
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <span asp-validation-for="AddError"></span>
+                </div>
+                <div class="form-group">
+                    <button id="btnAdd" type="button" onclick="Add()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
+                    <button id="btnEdit" type="button" onclick="Edit()" class="btn btn-success hidden"><i class="fa fa-Edit"></i> Edit</button>
+                    <button type="button" onclick="cancel()" class="btn btn-danger"><i class="fa fa-refresh"></i> Batal</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="Table" class="col-sm-7">
+        <table class="table dataTable table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Nama pengguna@*Html.DisplayNameFor(model => model.UsernameAdmin)*@
+                    </th>
+                    <th>
+                        Nama lengkap@*Html.DisplayNameFor(model => model.Name)*@
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Users)
+                {
+                    <tr>
+                        <td>
+                            @item.UsernameAdmin
+                        </td>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @*<a class="btn btn-warning GetEdit" data-id="@item.IdAdmin"><i class="fa fa-Edit"></i></a>*@
+                            <a id="btnLupa" class="btn btn-info GetPassword" data-id="@item.IdAdmin" href="#myModal"><i class="fa fa-lock"></i></a>
+
+                            @if (item.UsernameAdmin != User.Identity.Name)
+                            {
+                                <a class="btn btn-danger GetDelete" data-id="@item.IdAdmin"><i class="fa fa-trash"></i></a>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<div id="myModal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Reset Password</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-xs-5" style="text-align:right;pAdding-top:4px">
+                        <label>New Password :</label>
+                    </div>
+                    <div class="col-xs-7">
+                        <input type="password" class="form-control" id="NewPassword" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="ResetPassword()" class="btn btn-success" data-dismiss="modal">Kirim</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var Edit = false;
+        function ResetPassword() {
+            $.ajax({
+                type: "POST",
+                url: "/Users/Reset/?id=" + $('#NewPassword').data('id') + '&Pass=' + $('#NewPassword').val(),
+                success: function (data) {
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        $('#NewPassword').val('');
+                        TableRefresh();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+        }
+        function Add() {
+            $.ajax({
+                type: "POST",
+                url: "/Users/Buat/",
+                data: $('#AddForm').serialize(),
+                success: function (data) {
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        $('#AddForm')[0].reset();
+                        TableRefresh(); alert('Data berhasil ditambah');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+        }
+        function Edit() {
+            $.ajax({
+                type: "POST",
+                url: "/Users/Ubah/",
+                data: $('#AddForm').serialize(),
+                success: function (data) {
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        $('#btnEdit').AddClass('hidden');
+                        $('#btnAdd').removeClass('hidden');
+                        $('#PasswordG').removeClass('hidden');
+                        $('#AddForm')[0].reset();
+                        TableRefresh();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+        }
+        function cancel() {
+            $('#AddForm')[0].reset();
+            if (Edit) {
+                $('#btnEdit').AddClass('hidden');
+                $('#btnAdd').removeClass('hidden');
+                $('#PasswordG').removeClass('hidden');
+            }
+        }
+        function TableRefresh() {
+            $.ajax({
+                type: "GET",
+                url: "/Users/UserTable/",
+                success: function (data) {
+                    $('#Table').html(data);
+                    $('.dataTable').DataTable({
+                        dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                        searchHighlight: true
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+
+        }
+        $(document).on('click', '.GetDelete', function () {
+            var item = $(this);
+            if (confirm('Apakah anda yakin menghapus akun admin ini?'))
+                $.ajax({
+                    type: "POST",
+                    url: "/Users/Delete/?id=" + item.data('id'),
+                    success: function (data) {
+                        if (data.error) { } else {
+                            alert('Terhapus');
+                            TableRefresh();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                    }
+                });
+
+        });
+        $(document).on('click', '.GetEdit', function () {
+            var item = $(this);
+            $.ajax({
+                type: "GET",
+                url: "users/GetEdit/?id=" + item.data('id'),
+                success: function (data) {
+                    Edit = true;
+                    $('#IdAdmin').val(data.idUsers);
+                    $('#UsernameAdmin').val(data.username);
+                    $('#Name').val(data.name);
+                    $('#btnEdit').removeClass('hidden');
+                    $('#btnAdd').AddClass('hidden');
+                    $('#PasswordG').AddClass('hidden');
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+
+        });
+        //$(document).on('click', '.GetPassword', function () {
+        //    var item = $(this);
+        //    $('#NewPassword').data('id', item.data('id'));
+        //    $('#myModal').modal('show');
+        //});
+        $(document).ready(function(){
+            $("#btnLupa").click(function () {
+            var item = $(this);
+            $('#NewPassword').data('id', item.data('id'));
+            $("#myModal").modal('show');
+        });
+        });
+        $(document).ready(function () {
+            $('a[href="/Admin"]').AddClass('white')
+            $('.dataTable').DataTable({
+                dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                searchHighlight: true
+            });
+        });
+
+    </script>
+}

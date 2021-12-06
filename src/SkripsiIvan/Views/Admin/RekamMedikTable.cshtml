@@ -1,0 +1,46 @@
+@model List<RekamMedikString>
+
+@{Layout = "";}
+
+<table class="table dataTable table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Kode
+            </th>
+            <th>
+                Kategori Penyakit
+            </th>
+            <th>
+                Penyakit
+            </th>
+            <th>
+                Gejala
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Kode
+                </td>
+                <td>
+                    @item.Kategori
+                </td>
+                <td>
+                    @item.Penyakit
+                </td>
+                <td>
+                    @item.Gejala
+                </td>
+                <td>
+                    <a class="btn btn-danger GetDelete" data-id="@item.Kode"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

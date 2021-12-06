@@ -1,0 +1,244 @@
+@model PenyakitViewModels
+
+@{
+    ViewData["Title"] = "Penyakit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    #btnAdd {
+        margin-left: 20px;
+        margin-top: -1px;
+    }
+</style>
+
+<h2>Penyakit</h2>
+<hr />
+<div class="row">
+    <div class="col-sm-5">
+        <form id="AddForm" asp-action="Create">
+            <div class="form-horizontal">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Kategori</label>
+                    <div class="col-md-10">
+                        <select asp-for="KategoriId" class="form-control"></select>
+                        <span asp-validation-for="KategoriId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Nama</label>
+                    <div class="col-md-10">
+                        <input asp-for="IdPenyakit" type="hidden" class="form-control" />
+                        <input asp-for="NamaPenyakit" class="form-control" />
+                        <span asp-validation-for="NamaPenyakit" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Solusi</label>
+                    <div class="col-md-10">
+                        <input asp-for="Solusi" class="form-control" />
+                        <span asp-validation-for="Solusi" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button id="btnAdd" type="button" onclick="Add()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
+                    <button id="btnEdit" type="button" onclick="Edit()" class="btn btn-success hidden"><i class="fa fa-edit"></i> Ubah</button>
+                    <button type="button" onclick="cancel()" class="btn btn-danger"><i class="fa fa-refresh"></i> Batal</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="Table" class="col-sm-7">
+        <table class="table dataTable table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Kategori
+                    </th>
+                    <th>
+                        Nama Penyakit
+                    </th>
+                    <th>
+                        Solusi
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Penyakits)
+                {
+                    <tr>
+                        <td>
+                            @item.Kategori.NamaKategori
+                        </td>
+                        <td>
+                            @item.NamaPenyakit
+                        </td>
+                        <td>
+                            @item.Solusi
+                        </td>
+                        <td>
+                            <a class="btn btn-warning GetEdit" data-id="@item.IdPenyakit"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-danger GetDelete" data-id="@item.IdPenyakit"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+@section scripts{
+    <script>
+        var edit = false;
+        $('.dataTable').DataTable( {
+            language: {
+                decimal: ",",
+        processing:     "Sedang memproses...",
+        search:         "Cari&nbsp;:",
+        lengthMenu:    "Tampilkan _MENU_ entri",
+        info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+        infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+        infoFiltered:   "(disaring dari _MAX_ entri keseluruhan))",
+        infoPostFix:    "",
+        loadingRecords: "Sedang memuat...",
+        zeroRecords:    "Tidak ditemukan data yang sesuai",
+        emptyTable:     "Tidak ada data yang tersedia pada tabel ini",
+        paginate: {
+            first:      "Pertama",
+            previous:   "<<",
+            next:       ">>",
+            last:       "Terakhir"
+        },
+        aria: {
+            sortAscending:  ": aktifkan untuk mengurutkan kolom dalam urutan menaik",
+            sortDescending: ": aktifkan untuk mengurutkan kolom dalam urutan menurun"
+        }
+    }
+} );
+
+        function Add() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/CreateP/",
+                data: $('#AddForm').serialize(),
+                success: function (data) {
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        $('#AddForm')[0].reset();
+                        TableRefresh(); alert('Data berhasil ditambah.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+        }
+        function Edit() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/EditP/",
+                data: $('#AddForm').serialize(),
+                success: function (data) {
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        $('#btnEdit').addClass('hidden');
+                        $('#btnAdd').removeClass('hidden');
+                        $('#AddForm')[0].reset();
+                        TableRefresh();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+        }
+        function cancel() {
+            $('#AddForm')[0].reset();
+            if (edit) {
+                $('#btnEdit').addClass('hidden');
+                $('#btnAdd').removeClass('hidden');
+            }
+        }
+        function TableRefresh() {
+            $.ajax({
+                type: "GET",
+                url: "/admin/PenyakitTable/",
+                success: function (data) {
+                    $('#Table').html(data);
+                    $('.dataTable').DataTable({
+                        dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                        searchHighlight: true
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+
+        }
+        $(document).on('click', '.GetDelete', function () {
+            var item = $(this);
+            if (confirm('Are you sure want to delete?'))
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/DeleteP/" + item.data('id'),
+                    success: function (data) {
+                        if (data.error) { } else {
+                            alert('Deleted');
+                            TableRefresh();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                    }
+                });
+
+        });
+        $(document).on('click', '.GetEdit', function () {
+            var item = $(this);
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetEditP/" + item.data('id'),
+                success: function (data) {
+                    edit = true;
+                    $('#IdPenyakit').val(data.idPenyakit);
+                    $('#NamaPenyakit').val(data.namaPenyakit);
+                    $('#KategoriId').val(data.kategoriId);
+                    $('#Solusi').val(data.solusi);
+                    $('#btnEdit').removeClass('hidden');
+                    $('#btnAdd').addClass('hidden');
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+
+        });
+        $(document).ready(function () {
+            $('a[href="/Admin/Penyakit"]').addClass('white')
+            $('.dataTable').DataTable({
+                dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                searchHighlight: true
+            });
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetKategori/",
+                success: function (data) {
+                    $('#KategoriId').html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketike mencoba untuk koneksi basis data.');
+                }
+            });
+
+        });
+
+    </script>
+}

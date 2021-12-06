@@ -1,0 +1,372 @@
+﻿@model RekamMedikViewModels
+
+@{
+    ViewData["Title"] = "Konsultasi";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+<link href="~/css/bootstrap-slider.css" rel="stylesheet" />
+<style>
+    #btnAdd {
+        margin-left: 20px;
+        margin-top: -1px;
+    }
+
+    .textarea {
+        border: 1px solid #ddd;
+        height: 120px;
+        overflow-y: scroll;
+        margin-bottom: 5px;
+        margin-top: 5px;
+        padding: 5px;
+        -webkit-box-sizing: border-box !important;
+        -moz-box-sizing: border-box !important;
+        box-sizing: border-box !important;
+    }
+
+    .list-group {
+        margin-bottom: 0;
+    }
+</style>
+
+<h2>Konsultasi</h2>
+<hr />
+<div class="row">
+    <form id="form">
+        <div class="col-sm-7">
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Metode</label>
+                    <div class="col-md-10">
+                        <label class="radio-inline"><input asp-for="Metode" checked type="radio" value="0">Segitiga</label>
+                        <label class="radio-inline"><input asp-for="Metode" type="radio" value="1">Trapesium</label>
+                        @*<select asp-for="Metode" class="form-control">
+                                <option value="@((int)MetodeEnum.Bayes)">@MetodeEnum.Bayes</option>
+                                <option value="@((int)MetodeEnum.Fuzzy)">@MetodeEnum.Fuzzy</option>
+                            </select>*@
+                        <span asp-validation-for="Metode" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Kategori</label>
+                    <div class="col-md-10">
+                        <select asp-for="KategoriId" class="form-control"></select>
+                        <span asp-validation-for="KategoriId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-2 control-label">Gejala</label>
+                    <div class="col-md-10">
+                        <div id="ListBox" style="max-height:300px;overflow-y:scroll">
+                            <ul id="IdGejala" class="list-group">
+                                <li>
+                                    <p id="list-group-item" [ngClass]="{'active': selectedItem == item}" (click)="listClick($event, item)" class="mb-0"><i id="GambarGejala" class="fa-file-GambarGejala-o" aria-hidden="true"></i></p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <button id="btnAdd" type="button" onclick="Konsul()" class="btn btn-success"><i class="fa fa-stethoscope"></i> Diagnosis</button>
+                </div>
+                <div class="form-group">
+                    <div class="row">
+                        <div id="grafik" class="col-xs-12">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="col-sm-5">
+        <div class="row">
+            <div class="col-xs-12">
+                <span>Gejala yang terpicu</span>
+                <div id="Gterpicu" class="textarea">
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <span>Rule yang terpicu</span>
+                <div id="Rterpicu" class="textarea">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <span>Hasil konsultasi</span>
+                <div id="Hasil" class="textarea">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <span>Solusi Penyakit dengan kemungkinan tertinggi</span>
+                <div id="Solusi" class="textarea">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+@section scripts{
+    <script src="~/js/bootstrap-slider.js"></script>
+    <script src="~/js/chart.js"></script>
+    <script>
+        
+        function Konsul() {
+            var val = "&gejala=";
+            var canvasArray = [];
+            var dataArray = [];
+            
+            
+            $('#grafik').html('');
+            $('#IdGejala input').each(function () {
+                var item = $(this);
+                if (item.prop('checked')) {
+                    val += parseFloat(item.val()) + '-' + parseFloat(item.parent().parent().find('.span2').val()) + ',';
+                    var chart = 'chartJS' + item.val();
+                    $('#grafik').append('<div><canvas id="' + chart + '" width="400" height="200"></canvas></div>');
+                    
+                    var array = [, , , , , , , , ,];
+                    
+
+                    array[parseInt(parseFloat(item.parent().parent().find('.span2').val()) * 10)] = 0;
+                    var top = 2-parseInt($('#Metode:checked').val());
+                    var options = {
+                        type: 'line',
+                        data: {
+                            labels: ["0", , , "0.3", "0.4", , "0.6", "0.7", , , "1"],
+                            datasets: [
+                                {
+                                    label: 'Ringan',
+                                    data: [0, 1, top, 1, 0, , , , , , ],
+                                    borderWidth: 1,
+                                    radius: 0,
+                                    backgroundColor: 'rgba(0, 255, 0, 0.2)'
+                                },
+                              {
+                                  label: 'Sedang',
+                                  data: [, , , 0, 1, top, 1, 0, , , ],
+                                  borderWidth: 1,
+                                  radius: 0,
+                                  backgroundColor: 'rgba(0, 0, 255, 0.2)'
+                              },
+                              {
+                                  label: 'Parah',
+                                  data: [, , , , , , 0, 1, top, 1, 0],
+                                  borderWidth: 1,
+                                  radius: 0,
+                                  backgroundColor: 'rgba(255, 0, 0, 0.2)'
+                              },
+                              {
+                                  label: 'Gejala : ' + item.parent().clone().children().remove().end().text(),
+                                  data: array,
+                                  borderWidth: 1,
+                                  radius: 5,
+                                  backgroundColor: 'rgb(0, 0, 0)'
+                              }
+                            ]
+                        },
+                        options: {
+                            elements: {
+                                line: {
+                                    tension: 0
+                                }
+                            },
+                            scales: {
+                                xAxes: [{
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }],
+                                yAxes: [{
+                                    display: false,
+                                    gridLines: {
+                                        display: false
+                                    }
+                                }]
+                            }
+                        }
+                    }
+                    canvasArray.push('#' + chart);
+                    dataArray.push(options);
+                    //var ctx = document.getElementById(chart).getContext('2d');
+                    //new Chart(ctx, option);
+                    option = null;
+                }
+            });
+            $.each(canvasArray, function (index, value) {
+                var ctx = $(value).get(0).getContext("2d");
+                var myNewChart = new Chart(ctx,dataArray[index]);
+            });
+            $.ajax({
+                type: "POST",
+                url: "/Home/Konsuls/",
+                data: $('#form').serialize() + val.slice(0, -1),
+                success: function (data) {
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        if ($('#form').length < 3) {
+                               // alert('Anda belum memilih 3 gejala!');
+                        }
+                        
+                        $('#Gterpicu').html(data.data1);
+                        $('#Rterpicu').html(data.data2);
+                        $('#Hasil').html(data.data3);
+                        $('#Solusi').html(data.data4);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data');
+                }
+            });
+        }
+
+        function TableRefresh() {
+            $.ajax({
+                type: "GET",
+                url: "/admin/RekamMedikTable/",
+                success: function (data) {
+                    $('#Table').html(data);
+                    $('.dataTable').DataTable({
+                        dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                        searchHighlight: true
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data');
+                }
+            });
+
+        }
+        $(document).on('click', '.GetDelete', function () {
+            var item = $(this);
+            if (confirm('Apakah kamu ingin menghapus RM-' + item.data('id')  +' ?'))
+            $.ajax({
+                type: "POST",
+                url: "/admin/DeleteR/" + item.data('id'),
+                success: function (data) {
+                    if (data.error) { } else {
+                        alert('Data terhapus');
+                        TableRefresh();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data');
+                }
+            });
+
+        });
+        $(document).on('change', '#KategoriId', function () {
+            refresh();
+        });
+        function t(a) {
+            switch (a) {
+                case 0: return a + "(Ringan)";
+                case 0.3: return a + "(Sedikit parah)";
+                case 0.4: return a + "(Agak parah)";
+                case 0.6: return a + "(Parah)";
+                case 0.7: return a + "(Sangat Parah)";
+                case 1: return a + "(Sangat Parah)";
+                default: return a;
+            }
+        }
+        function refresh() {
+            var kat = $('#KategoriId').val();
+            if (kat == null)
+                kat = 1;
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetGejalaTree1/",
+                data: { id: 0, kat: kat},
+                success: function (data) {
+                    $('#IdGejala').html('');
+                    $.each(data, function (i, val) {
+                        var child = '<i class="fa fa-chevron-right" data-id="' + val.id + '"></i>'
+                        var check = '<input type="checkbox" value="' + parseFloat(val.id) + '" />';
+                        var interval = '<div style="display:none"><br /><b>' + t(val.min) + '</b> <input type="text" data-id="' +   (val.interval) +'" class="span2" value="' + (val.interval) + '" data-slider-min="' + (val.min) + '" data-slider-max="' + parseFloat(val.max) + '" data-slider-step="0.01" data-slider-value="' + parseFloat(val.interval) + '" /> <b>' + t(val.max) + '</b></div>'
+                        if (!val.child)
+                            child = "";
+                        else {
+                            check = "";
+                            interval = "";
+                        }
+
+                        $('#IdGejala').append('<li class="list-group-item clearfix">' + child + '<label>' + check + val.nama + '</label>' + interval + '</li>');
+                        // $('#GambarGejala').append('<img src="/img/' +  + '" />');
+                    })
+                    $('.span2').slider({ tooltip: 'always'});
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data.');
+                }
+            });
+        }
+        $(document).ready(function () {
+            $('a[href="/Home/Konsultasi"]').addClass('white')
+            $('.dataTable').DataTable({
+                dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                searchHighlight: true
+            });
+
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetKategori/",
+                success: function (data) {
+                    $('#KategoriId').html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert('There was an error when trying to connect');
+                }
+            });
+            refresh()
+        });
+        $(document).on('click', '.list-group-item i', function () {
+            var item = $(this);
+            if (item.hasClass('fa-chevron-right')) {
+                item.removeClass('fa-chevron-right');
+                item.addClass('fa-chevron-down');
+            } else {
+                item.removeClass('fa-chevron-down');
+                item.addClass('fa-chevron-right');
+            }
+            if (item.hasClass('loaded')) {
+                item.parent().find('ul').fadeToggle();
+            }
+            else {
+                item.addClass('loaded')
+                var kat = $('#KategoriId').val();
+                if (kat == null)
+                    kat = 1;
+                $.ajax({
+                    type: "GET",
+                    url: "/admin/GetGejalaTree1/" + item.data('id') + "?kat=" + kat,
+                    success: function (data) {
+                        item.parent().append('<ul class="list-group"></ul>')
+                        $.each(data, function (i, val) {
+                            item.parent().find('ul').append(val)
+                        })
+                        $('.span2').slider({ tooltip: 'always' });
+                    },
+                    error: function (xhr, status, error) {
+                        alert('There was an error when trying to connect');
+                    }
+                });
+            }
+        })
+        $(document).on('click', '.list-group-item input', function () {
+            var item = $(this).parent().parent();
+            item.find('div:first').toggle();
+            var child = item.find('div:first .span2');
+            //child.slider('setValue', child.data(parseFloat('id')));
+        })
+    </script>
+}

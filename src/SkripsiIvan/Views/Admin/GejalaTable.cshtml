@@ -1,0 +1,70 @@
+@model List<SkripsiIvan.Models.Gejala>
+
+
+@{Layout = "";}
+
+<table class="table dataTable table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Kategori Penyakit
+            </th>
+            <th>
+                Gejala
+            </th>
+            <th>
+                Kategori Gejala
+            </th>
+            <th>
+                Gambar
+            </th>
+            <th>
+                Min
+            </th>
+            <th>
+                Max
+            </th>
+            <th>
+                Nilai Crisp
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.Kategori.NamaKategori
+                </td>
+                <td>
+                    @item.NamaGejala
+                </td>
+                <td>
+                    @if (item.ParentId != 0)
+                    {
+                        @(Model.FirstOrDefault(x => x.IdGejala == item.ParentId).NamaGejala)
+                    }
+                    else
+                    {
+                        @("-")
+                    }
+                </td>
+                <td>
+                    <div id="GambarGejala">
+                        @if (item.GambarGejala == null && item.GambarGejala == "")
+                        {
+
+                            <img src="~/images/notfound.jpg" style="width:150px;" class="img-circle">
+                        }
+                        else
+                        {
+                            <img src="~/images/@item.GambarGejala" style="width:150px;" class="img-circle">
+                        }
+
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

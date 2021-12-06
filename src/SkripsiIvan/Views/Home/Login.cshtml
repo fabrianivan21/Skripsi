@@ -1,0 +1,39 @@
+﻿@{
+@using SkripsiIvan
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+    ViewData["Title"] = "Halaman Login";
+    Layout = "_LayoutLogin";
+}
+
+@model SkripsiIvan.Models.LoginViewModels
+
+<div class="row">
+    <div class="col-xs-6">
+        <h2>Halaman Login <br /> Administrator</h2>
+        <p>Login disini untuk mengakses.</p>
+    </div>
+    <div class="col-xs-6">
+
+
+        <form method="post" asp-action="login" asp-controller="Home" class="form-signin">
+            <h2 class="form-signin-heading">Admin Login</h2>
+            <label asp-for="Username" class="sr-only">Username</label>
+            <input asp-for="Username" class="form-control" placeholder="Username" required="" autofocus="">
+            <span asp-validation-for="Username"></span>
+            <label asp-for="Password" class="sr-only">Password</label>
+            <input type="password" asp-for="Password" class="form-control" placeholder="Password" required="">
+            <span asp-validation-for="Password"></span>
+            <br />
+            <div class="col-xs-1"></div>
+
+            <div class="col-xs-4">
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
+            </div>
+            <div class="col-xs-1"></div>
+            <span asp-validation-for="error"></span>
+        </form>
+        <br />
+        
+    </div>
+</div>

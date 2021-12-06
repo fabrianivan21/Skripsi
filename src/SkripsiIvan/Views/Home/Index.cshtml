@@ -1,0 +1,41 @@
+@model RekamMedikViewModels
+
+@{
+    ViewData["Title"] = "Halaman Utama";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12" style="text-align:center;">
+        <br />
+        <h1>APLIKASI SISTEM INFERENSI FUZZY UNTUK </h1>
+        <h1>MENDIAGNOSIS PENYAKIT MATA</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-9">
+        <img style="max-height:500px;width:100%" src="~/images/image.jpg" />
+    </div>
+    <div class="col-xs-3" style="height:500px">
+        <div class="row" style="height:500px">
+            <div class="col-xs-12">
+                <span>Oleh : Fabrian Ivan Prasetya (535140042)</span>
+            </div>
+            <div class="col-xs-12" style="margin-top:80%">
+                <span>Pembimbing :</span>
+                <br />
+                <span style="padding-left:20px">1. Dra. Chairisni Lubis, M.Kom</span>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+   <script>
+       $(document).ready(function () {
+           $('a[href="/Home/Index"]').addClass('white')
+       })
+    </script>
+}
+
+

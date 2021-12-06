@@ -1,0 +1,264 @@
+﻿@{
+    ViewData["Title"] = "Bantuan";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+@model List<SkripsiIvan.Models.Gejala>
+
+<style>
+</style>
+<h2>Bantuan</h2>
+<h3>Cara Menggunakan Aplikasi :</h3>
+
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Modul Utama</a></li>
+    <li><a data-toggle="tab" href="#moduladmin">Modul Admin</a></li>
+    <li><a data-toggle="tab" href="#modulPelatihan">Modul Pelatihan</a></li>
+    <li><a data-toggle="tab" href="#modulkonsultasi">Modul Konsultasi</a></li>
+    <li><a data-toggle="tab" href="#modulbantuan">Modul Bantuan</a></li>
+    <li><a data-toggle="tab" href="#ilustrasi">Ilustrasi Gejala</a></li>
+</ul>
+
+<div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+        <h3>Modul Utama</h3>
+        <p>
+            <div style="margin-left:20px">Modul utama merupakan modul yang muncul pada saat pertama kali menjalankan program.</div>
+            <div style="margin-left:20px">Pada modul ini terdapat beberapa tombol yang digunakan untuk mengakses modul lainnya, yaitu :</div>
+
+            <div style="margin-left:20px">⦁	Tombol Admin</div>
+
+            <div style="margin-left:40px">Tombol admin merupakan tombol yang digunakan untuk mengakses halaman admin. Pada saat mengklik tombol admin, maka akan muncul tampilan menu login. Login ini dilakukan untuk masuk ke dalam halaman modul admin.</div>
+
+            <div style="margin-left:20px">⦁	Tombol Pelatihan</div>
+
+            <div style="margin-left:40px">Tombol ini merupakan tombol yang digunakan untuk mengakses modul Pelatihan. Pada saat mengklik tombol Pelatihan, maka akan masuk ke tampilan modul Pelatihan.</div>
+
+            <div style="margin-left:20px">⦁	Tombol Bantuan</div>
+
+            <div style="margin-left:40px">Tombol ini merupakan tombol yang digunakan untuk mengakses modul bantuan. Pada saat mengklik tombol bantuan, maka akan masuk ke halaman modul bantuan. Modul bantuan berisi informasi cara menggunakan aplikasi.</div>
+        </p>
+    </div>
+    <div id="moduladmin" class="tab-pane fade">
+        <h3>Modul Admin</h3>
+        <p>
+            <div style="margin-left:20px">Modul admin berisi menu-menu untuk menginput serta mengupdate atau menghapus data admin, kategori, gejala, penyakit, rekam medik dan rules. Perubahan data pada modul ini akan disimpan ke dalam basis data. Modul admin terdiri atas menu Admin, Kategori, Penyakit, Gejala, Rekam Medik, dan Rule</div>
+
+            <div style="margin-left:20px">⦁	Menu admin diakses dengan mengklik tombol admin pada modul admin. Untuk membuat akun admin yang baru, masukkan name, username, dan password pada textbox yang tersedia. Kemudian klik tombol tambah setelah selesai memasukkan semua data yang harus diisi. Tombol batal digunakan jika tidak jadi menginput data. Tersedia juga fitur search yang dapat digunakan untuk mencari data admin. Pada bagian tabel admin terdapat tombol ubah password yang berwarna biru digunakan untuk mengubah password dan tombol delete yang berwarna merah digunakan untuk menghapus data pada tabel admin. </div>
+
+            <div style="margin-left:20px">⦁	Menu kategori diakses dengan mengklik tombol kategori pada modul admin. Untuk membuat kategori penyakit yang baru, masukkan nama kategori penyakit pada textbox yang tersedia. Setelah itu klik tombol tambah untuk menginput data sedangkan tombol batal digunakan jika tidak jadi menginput data. Tersedia juga fitur search yang dapat digunakan untuk mencari data kategori penyakit. Pada bagian tabel kategori penyakit ini terdapat dua tombol, yaitu tombol ubah dan delete. Tombol ubah yang berwarna kuning digunakan untuk mengubah data yang ada pada tabel sedangkan tombol delete yang berwarna merah digunakan untuk menghapus data yang ada pada tabel. </div>
+
+            <div style="margin-left:20px">⦁	Menu penyakit diakses dengan mengklik tombol penyakit pada modul admin. Untuk menginput data penyakit yang baru, pertama memilih kategori penyakit pada combo box yang sesuai dengan data penyakit yang akan dimasukkan. Setelah itu mengisi nama penyakit dan solusinya pada textbox yang tersedia. Kemudian klik tombol tambah untuk menginput data sedangkan tombol batal digunakan jika tidak jadi menginput data. Tersedia juga fitur search yang dapat digunakan untuk mencari data penyakit. Pada bagian tabel penyakit ini terdapat dua tombol, yaitu tombol ubah dan delete. Tombol ubah yang berwarna kuning digunakan untuk mengubah data yang ada pada tabel sedangkan tombol delete yang berwarna merah digunakan untuk menghapus data yang ada pada tabel.</div>
+
+            <div style="margin-left:20px">⦁	Menu gejala diakses dengan mengklik tombol gejala pada modul admin. Untuk menginput data gejala yang baru, pertama memilih kategori penyakit pada combo box yang sesuai dengan data gejala yang akan dimasukkan. Setelah itu mengisi nama gejala pada textbox yang tersedia. Kemudian menentukan apakah gejala yang akan diinput memiliki parent gejala atau tidak. Jika gejala yang diinput tidak memiliki parent maka gejala tersebut berstatus sebagai parent. Parent merupakan sebutan bagi gejala yang tidak memiliki kategori gejala atau bisa juga sebagai induk dari kategori gejala yang ada. Lalu menentukan nilai interval dari setiap gejala atau kategori gejala yang diinput menggunakan track bar. Setelah itu klik tombol tambah untuk menginput data sedangkan tombol batal digunakan jika tidak jadi menginput data. Tersedia juga fitur search yang dapat digunakan untuk mencari data penyakit. Pada bagian tabel penyakit ini terdapat dua tombol, yaitu tombol ubah dan delete. Tombol ubah yang berwarna kuning digunakan untuk mengubah data yang ada pada tabel sedangkan tombol delete yang berwarna merah digunakan untuk menghapus data yang ada pada tabel.</div>
+
+            <div style="margin-left:20px">⦁	Menu rekam medik diakses dengan mengklik tombol rekam medik pada modul admin. Untuk menginput data rekam medik yang baru, pertama memilih kategori penyakit pada combo box yang sesuai dengan data penyakit dan gejala yang ingin dipilih. Setelah itu memilih nama penyakit yang tersedia pada combo box penyakit dan juga memilih gejala pada combo box gejala. Lalu klik tombol tambah untuk menginput data sedangkan tombol batal digunakan jika tidak jadi menginput data. Tersedia juga fitur search yang dapat digunakan untuk mencari data rekam medik. Pada bagian tabel rekam medik ini terdapat satu tombol, yaitu tombol delete. Tombol delete yang berwarna merah digunakan untuk menghapus data yang ada pada tabel.</div>
+
+            <div style="margin-left:20px">⦁	Menu rule akan terupdate secara otomatis setelah data rekam medik diinputkan pada menu rekam medik. Tersedia juga fitur search sehingga dapat memudahkan dalam mencari rule suatu penyakit. </div>
+        </p>
+    </div>
+    <div id="modulPelatihan" class="tab-pane fade">
+        <h3>Modul Pelatihan</h3>
+        <p>
+            <div style="margin-left:20px">Modul ini berfungsi untuk melatih data penyakit dan menentukan tingkat keparahanan suatu penyakit berdasarkan dari gejala-gejala yang dipilih.</div>
+
+            <div style="margin-left:20px">Cara menggunakan modul Pelatihan : </div>
+
+            <div style="margin-left:20px">⦁	1.Klik menu Pelatihan di modul utama.</div>
+
+            <div style="margin-left:20px">⦁	2.Pilih metode fungsi keanggotaan fuzzy yang ingin digunakan yang dapat dipilih oleh pengguna, yaitu metode segitiga atau trapesium.</div>
+
+            <div style="margin-left:20px">⦁	3.Kemudian pilih kategori penyakit.</div>
+
+            <div style="margin-left:20px">⦁	4.Setelah itu pilih gejala-gejala yang di derita oleh pasien pada checklistbox dan menentukan tingkat ketingkatkeparahanan gejala menggunakan trackbar yang sudah disediakan untuk setiap gejala yang dipilih.</div>
+
+            <div style="margin-left:20px">⦁	5.Lalu klik tombol Latih (akan muncul gejala yang terpicu, rule terpicu, hasil, dan solusi dari penyakit dengan kemungkinan tertinggi) serta nilai persentase tingkat ketingkatkeparahan dari setiap penyakit.</div>
+
+            <div style="margin-left:20px">⦁	6.Hasil Pelatihan yang paling atas merupakan penyakit yang kemungkinan besar diderita oleh pasien.</div>
+
+            <div style="margin-left:20px">⦁	7.Tekan tombol home untuk kembali ke menu utama.</div>
+        </p>
+    </div>
+    <div id="modulkonsultasi" class="tab-pane fade">
+        <h3>Modul konsultasi</h3>
+        <p>
+            <div style="margin-left:20px">Dalam modul konsultasi pengguna akan mengisikan gejala-gejala yang dialami oleh pengguna.</div>
+            <div style="margin-left:20px">Cara menggunakan modul konsultasi ini:</div>
+
+
+            <div style="margin-left:20px">⦁	1.Klik menu konsultasi di modul utama.</div>
+
+            <div style="margin-left:20px">⦁	2.Pilih metode fungsi keanggotaan fuzzy yang ingin digunakan yang dapat dipilih oleh pengguna, yaitu metode segitiga atau trapesium.</div>
+
+            <div style="margin-left:20px">⦁	3.Kemudian pilih kategori penyakit.</div>
+
+            <div style="margin-left:20px">⦁	4.Setelah itu pilih gejala-gejala yang di derita oleh pasien pada checklistbox dan menentukan tingkat ketingkatkeparahanan gejala menggunakan trackbar yang sudah disediakan untuk setiap gejala yang dipilih.</div>
+
+            <div style="margin-left:20px">⦁	5.Lalu klik tombol Uji (akan muncul gejala yang terpicu, rule terpicu, hasil, dan solusi dari penyakit dengan kemungkinan tertinggi) serta nilai persentase tingkat ketingkatkeparahanan dari setiap penyakit.</div>
+
+            <div style="margin-left:20px">⦁	6.Hasil konsultasi yang paling atas merupakan penyakit yang kemungkinan besar diderita oleh pasien.</div>
+
+            <div style="margin-left:20px">⦁	7.Tekan tombol home untuk kembali ke menu utama.</div>
+        </p>
+    </div>
+
+
+    <div id="modulbantuan" class="tab-pane fade">
+        <h3>Modul Bantuan</h3>
+        <p>
+            <div style="margin-left:20px">Dalam modul bantuan pengguna akan diberikan informasi bagaimana cara mengakses dan memfungsikan setiap modul sesuai dengan fungsinya masing-masing. </div>
+            <div style="margin-left:20px">Dapat di akses dengan mengklik tombol bantuan pada halaman aplikasi</div>
+        </p>
+    </div>
+    <div id="ilustrasi" class="tab-pane fade">
+        <h3>Ilustrasi Gejala</h3>
+
+        <table class="table dataTable table-hover table-bordered" class="col-sm-8">
+            <thead>
+                <tr>
+                    <th>
+                        Kategori Penyakit
+                    </th>
+                    <th>
+                        Gejala
+                    </th>
+                    <th>
+                        Kategori Gejala
+                    </th>
+                    <th>
+                        Gambar
+                    </th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            @item.Kategori.NamaKategori
+                        </td>
+                        <td>
+                            @item.NamaGejala
+                        </td>
+                        <td>
+                            @if (item.ParentId != 0)
+                            {
+                                @(Model.FirstOrDefault(x => x.IdGejala == item.ParentId).NamaGejala)
+                            }
+                            else
+                            {
+                                @("-")
+                            }
+                        </td>
+                        <td>
+                            <div id="GambarGejala">
+                                @if (@item.GambarGejala != null)
+                                {
+                                    <img src="../images/@item.GambarGejala" style="width:150px;" class="img-circle" />
+                                }
+                                else
+                                {
+                                    <img src="../images/notfound.jpg" style="width:150px;" class="img-circle" />
+                                
+                                }
+
+                            </div>
+                        </td>
+                    </tr>
+                }
+        </table>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+
+        function TableRefresh() {
+            $.ajax({
+                type: "GET",
+                url: "/admin/GejalaTable/",
+                success: function (data) {
+                    $('#Table').html(data);
+                    $('.dataTable').DataTable({
+                        dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                        searchHighlight: true
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error');
+                }
+            });
+            var kat = $('#KategoriId').val();
+            if (kat == null)
+                kat = 1;
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetGejalaSelect/0?kat=" + kat,
+                success: function (data) {
+                    $('#ParentId').html('<option selected value="0" >-</option>' + data)
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error');
+                }
+            });
+
+        }
+        $('.dataTable').DataTable( {
+            language: {
+        processing:     "Sedang memproses...",
+        search:         "Cari&nbsp;:",
+        lengthMenu:    "Tampilkan _MENU_ entri",
+        info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+        infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+        infoFiltered:   "(disaring dari _MAX_ entri keseluruhan))",
+        infoPostFix:    "",
+        loadingRecords: "Sedang memuat...",
+        zeroRecords:    "Tidak ditemukan data yang sesuai",
+        emptyTable:     "Tidak ada data yang tersedia pada tabel ini",
+        paginate: {
+            first:      "Pertama",
+            previous:   "<<",
+            next:       ">>",
+            last:       "Terakhir"
+        },
+        aria: {
+            sortAscending:  ": aktifkan untuk mengurutkan kolom dalam urutan menaik",
+            sortDescending: ": aktifkan untuk mengurutkan kolom dalam urutan menurun"
+        }
+        }
+        } );
+        $(document).ready(function () {
+            $('a[href="/Home/Bantuan"]').addClass('white')
+            $('.dataTable').DataTable({
+                dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                searchHighlight: true
+            });
+            $("#Interval").slider({ tooltip: 'always' });
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetKategori/",
+                success: function (data) {
+                    $('#KategoriId').html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error');
+                }
+            });
+            var kat = $('#KategoriId').val();
+            if (kat == null)
+                kat = 1;
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetGejalaSelect/0?kat=" + kat,
+                success: function (data) {
+                    $('#ParentId').html('<option selected value="0" >-</option>' + data)
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data');
+                }
+            });
+
+        });
+
+    </script>
+}

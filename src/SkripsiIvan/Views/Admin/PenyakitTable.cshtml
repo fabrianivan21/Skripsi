@@ -1,0 +1,40 @@
+@model List<Penyakit>
+
+@{Layout = "";}
+
+<table class="table dataTable table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>
+                Kategori Penyakit
+            </th>
+            <th>
+                Nama Penyakit
+            </th>
+            <th>
+                Solusi
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+                {
+            <tr>
+                <td>
+                    @item.Kategori.NamaKategori
+                </td>
+                <td>
+                    @item.NamaPenyakit
+                </td>
+                <td>
+                    @item.Solusi
+                </td>
+                <td>
+                    <a class="btn btn-warning GetEdit" data-id="@item.IdPenyakit"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-danger GetDelete" data-id="@item.IdPenyakit"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+                }
+    </tbody>
+</table>

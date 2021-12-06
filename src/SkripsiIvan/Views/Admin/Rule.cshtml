@@ -1,0 +1,89 @@
+@model List<Rule>
+@{
+    ViewData["Title"] = "Rule";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<h2>Rule</h2>
+<hr />
+<div class="row">
+    <div id="Table" class="col-sm-12">
+        <table class="table dataTable table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Kategori
+                    </th>
+                    <th>
+                        Penyakit
+                    </th>
+                    <th>
+                        Gejala
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        
+                        <td>
+                            @item.Kategori.NamaKategori
+                        </td>
+                        <td>
+                            @item.IdPenyakitNavigation.NamaPenyakit
+                        </td>
+                        <td>
+                            @item.IdGejalaNavigation.NamaGejala
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+@section scripts{ 
+    <script>
+
+        $(document).ready(function () {
+            $('a[href="/Admin/Rule"]').addClass('white')
+            $('.dataTable').DataTable({
+                dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                searchHighlight: true
+            });
+            $('.dataTable').DataTable( {
+            language: {
+                decimal: ",",
+        processing:     "Sedang memproses...",
+        search:         "Cari&nbsp;:",
+        lengthMenu:    "Tampilkan _MENU_ entri",
+        info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+        infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+        infoFiltered:   "(disaring dari _MAX_ entri keseluruhan))",
+        infoPostFix:    "",
+        loadingRecords: "Sedang memuat...",
+        zeroRecords:    "Tidak ditemukan data yang sesuai",
+        emptyTable:     "Tidak ada data yang tersedia pada tabel ini",
+        paginate: {
+            first:      "Pertama",
+            previous:   "<<",
+            next:       ">>",
+            last:       "Terakhir"
+        },
+        aria: {
+            sortAscending:  ": aktifkan untuk mengurutkan kolom dalam urutan menaik",
+            sortDescending: ": aktifkan untuk mengurutkan kolom dalam urutan menurun"
+        }
+    }
+} );
+
+            
+        });
+
+    </script>
+}

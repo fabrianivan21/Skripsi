@@ -1,0 +1,376 @@
+@model GejalaViewModels
+@{
+    ViewData["Title"] = "Gejala";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/css/bootstrap-slider.css" rel="stylesheet" />
+<style>
+    #btnAdd {
+        margin-left: 20px;
+        margin-top: -1px;
+    }
+
+    .slider.slider-horizontal {
+        margin: 0 15px;
+    }
+</style>
+
+<h2>Gejala</h2>
+<hr />
+<div class="row">
+    <div class="col-sm-4">
+        <form id="AddForm" enctype="multipart/form-data" asp-action="Create">
+            <div class="form-horizontal">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Kategori Penyakit</label>
+                    <div class="col-md-9">
+                        <select asp-for="KategoriId" class="form-control"></select>
+                        <span asp-validation-for="KategoriId" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Nama</label>
+                    <div class="col-md-9">
+                        <input asp-for="NamaGejala" type="hidden" class="form-control" />
+                        <input asp-for="NamaGejala" class="form-control" />
+                        <span asp-validation-for="NamaGejala" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Kategori Gejala</label>
+                    <div class="col-md-9">
+                        <select asp-for="ParentId" class="form-control"></select>
+                        <span asp-validation-for="ParentId" class="text-danger"></span>
+                    </div>
+                </div>
+                <br />
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Nilai</label>
+                    <div class="col-md-9" style="padding-top:8px">
+                        <b>0</b> <input asp-for="Interval" type="text" class="span2" value="" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="0" /> <b>1</b>
+                        <span asp-validation-for="Interval" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-3 control-label">Gambar</label>
+                    <div class="col-md-9" style="padding-top:8px">
+                        <label asp-for="FileGambar" style="display: none" class="custom-file-input">Pilih file</label>
+                        <input asp-for="FileGambar" type="file" asp-for="GambarGejala" class="upload" id="FileGambar" name="FileGambar" placeholder="Unggah gambar" accept="image/*" onchange="validateFileType()" required><br />
+                        <span asp-for="GambarGejala" class="text-danger"></span>
+
+                        <progress id="fileProgress" style="display: none"></progress>
+                    </div>
+                </div>
+                <div class="form-group" style="display: none">
+                    <img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
+                </div>
+                <div class="form-group">
+                    <button id="btnAdd" type="button" onclick="Add()" class="btn btn-success"><i class="fa fa-plus"></i> Tambah</button>
+                    <button id="btnEdit" type="button" onclick="Edit()" class="btn btn-success hidden"><i class="fa fa-edit"></i> Ubah</button>
+                    <button type="button" onclick="cancel()" class="btn btn-danger"><i class="fa fa-refresh"></i> Batal</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div id="Table" class="col-sm-8">
+        <table class="table dataTable table-hover table-bordered">
+            <thead>
+                <tr>
+                    <th>
+                        Kategori Penyakit
+                    </th>
+                    <th>
+                        Gejala
+                    </th>
+                    <th>
+                        Kategori Gejala
+                    </th>
+                    <th>
+                        Gambar
+                    </th>
+                    <th>
+                        Min
+                    </th>
+                    <th>
+                        Max
+                    </th>
+                    <th>
+                        Nilai Crisp
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Gejalas)
+                {
+                    <tr>
+                        <td>
+                            @item.Kategori.NamaKategori
+                        </td>
+                        <td>
+                            @item.NamaGejala
+                        </td>
+                        <td>
+                            @if (item.ParentId != 0)
+                            {
+                                @(Model.Gejalas.FirstOrDefault(x => x.IdGejala == item.ParentId).NamaGejala)
+                            }
+                            else
+                            {
+                                @("-")
+                            }
+                        </td>
+                        <td>
+                            @if (@item.GambarGejala != null)
+                            {
+                                <img src="../images/@item.GambarGejala" style="width:150px;" class="img-circle" />
+                            }
+                            else
+                            {
+                                <img src="../images/notfound.jpg" style="width:150px;" class="img-circle" />
+                            }
+                        </td>
+                        <td>
+                            @item.Min
+                        </td>
+                        <td>
+                            @item.Max
+                        </td>
+                        <td>
+                            @item.Interval
+                        </td>
+
+                        <td>
+                            <a class="btn btn-warning GetEdit" data-id="@item.IdGejala"><i class="fa fa-edit"></i></a>
+                            <a class="btn btn-danger GetDelete" data-id="@item.IdGejala"><i class="fa fa-trash"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+@section scripts{
+    <script src="~/js/bootstrap-slider.js"></script>
+    <script>
+        var edit = false;
+        $('.dataTable').DataTable( {
+            language: {
+                decimal: ",",
+        processing:     "Sedang memproses...",
+        search:         "Cari&nbsp;:",
+        lengthMenu:    "Tampilkan _MENU_ entri",
+        info:           "Menampilkan _START_ sampai _END_ dari _TOTAL_ entri",
+        infoEmpty:      "Menampilkan 0 sampai 0 dari 0 entri",
+        infoFiltered:   "(disaring dari _MAX_ entri keseluruhan))",
+        infoPostFix:    "",
+        loadingRecords: "Sedang memuat...",
+        zeroRecords:    "Tidak ditemukan data yang sesuai",
+        emptyTable:     "Tidak ada data yang tersedia pada tabel ini",
+        paginate: {
+            first:      "Pertama",
+            previous:   "<<",
+            next:       ">>",
+            last:       "Terakhir"
+        },
+        aria: {
+            sortAscending:  ": aktifkan untuk mengurutkan kolom dalam urutan menaik",
+            sortDescending: ": aktifkan untuk mengurutkan kolom dalam urutan menurun"
+        }
+    }
+} );
+        var _URL = window.URL || window.webkitURL;
+       function validateFileType(){
+        var fileName = document.getElementById("FileGambar").value;
+        var idxDot = fileName.lastIndexOf(".") + 1;
+        var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+        if (extFile=="jpg" || extFile=="jpeg" || extFile=="png"){
+            
+        }else{
+            alert("Hanya gambar berformat jpg atau png yang diijinkan!");
+            $('#FileGambar').val('');
+        }   
+    }
+        function Add() {
+            $.ajax({
+
+                type: "POST",
+                url: "/admin/CreateG/",
+                data: $('#AddForm').serialize(),
+                success: function (data) {
+                    
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        $('#NamaGejala').val('');
+                        var filename = $("#FileGambar").get(0).files;
+                        if (files.length > 0) {
+                            var FileGambar = $('#FIleGambar')[0];
+                            data.append("FileGambar", filename[0]);
+                        }
+                        else {
+                            alert('Data tidak berhasil diunggah:' + error);
+                        }
+
+                        TableRefresh();
+                        alert('Data berhasil ditambah');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error:' + error);
+                }
+            });
+        }
+        function Edit() {
+            $.ajax({
+                type: "POST",
+                url: "/admin/EditG/",
+                data: $('#AddForm').serialize(),
+                success: function (data) {
+                    if (data.error) {
+                        alert(data.errorMsg);
+                    } else {
+                        $('#btnEdit').addClass('hidden');
+                        $('#btnAdd').removeClass('hidden');
+                        $('#AddForm')[0].reset();
+                        TableRefresh();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data.');
+                }
+            });
+        }
+        function cancel() {
+            $('#AddForm')[0].reset();
+            if (edit) {
+                $('#btnEdit').addClass('hidden');
+                $('#btnAdd').removeClass('hidden');
+            }
+        }
+        $(document).on('change', '#KategoriId', function () {
+            var kat = $('#KategoriId').val();
+            if (kat == null)
+                kat = 1;
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetGejalaSelect/0?kat=" + kat,
+                success: function (data) {
+                    $('#ParentId').html('<option selected value="0" >-</option>' + data)
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error');
+                }
+            });
+        });
+
+        function TableRefresh() {
+            $.ajax({
+                type: "GET",
+                url: "/admin/GejalaTable/",
+                success: function (data) {
+                    $('#Table').html(data);
+                    $('.dataTable').DataTable({
+                        dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                        searchHighlight: true
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error');
+                }
+            });
+            var kat = $('#KategoriId').val();
+            if (kat == null)
+                kat = 1;
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetGejalaSelect/0?kat=" + kat,
+                success: function (data) {
+                    $('#ParentId').html('<option selected value="0" >-</option>' + data)
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error');
+                }
+            });
+
+        }
+        $(document).on('click', '.GetDelete', function () {
+            var item = $(this);
+            if (confirm('Apakah Anda ingin menghapus gejala ini?'))
+                $.ajax({
+                    type: "POST",
+                    url: "/admin/DeleteG/" + item.data('id'),
+                    success: function (data) {
+                        if (data.error) {
+                            alert(data.errorMsg)
+                        } else {
+                            alert('Data dengan id #' + item.data('id') + ' telah dihapus');
+                            TableRefresh();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Koneksi error');
+                    }
+                });
+
+        });
+        $(document).on('click', '.GetEdit', function () {
+            var item = $(this);
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetEditG/" + item.data('id'),
+                success: function (data) {
+                    edit = true;
+                    $('#IdGejala').val(data.idGejala);
+                    $('#NamaGejala').val(data.namaGejala);
+                    $('#KategoriId').val(data.kategoriId);
+                    $('#FileGambar').val('');
+                    $('#btnEdit').removeClass('hidden');
+                    $('#btnAdd').addClass('hidden');
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data');
+                }
+            });
+
+        });
+        $(document).ready(function () {
+            $('a[href="/Admin/Gejala"]').addClass('white')
+            $('.dataTable').DataTable({
+                dom: '<"top"f>rt<"row"<"col-sm-5"i><"col-sm-7"p>>',
+                searchHighlight: true
+            });
+            $("#Interval").slider({ tooltip: 'always' });
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetKategori/",
+                success: function (data) {
+                    $('#KategoriId').html(data);
+                },
+                error: function (xhr, status, error) {
+                    alert('Koneksi error');
+                }
+            });
+            var kat = $('#KategoriId').val();
+            if (kat == null)
+                kat = 1;
+            $.ajax({
+                type: "GET",
+                url: "/admin/GetGejalaSelect/0?kat=" + kat,
+                success: function (data) {
+                    $('#ParentId').html('<option selected value="0" >-</option>' + data)
+                },
+                error: function (xhr, status, error) {
+                    alert('Terjadi kesalahan ketika mencoba untuk koneksi ke basis data');
+                }
+            });
+
+        });
+
+    </script>
+}
